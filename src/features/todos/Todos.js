@@ -2,6 +2,7 @@ import { v4 as uuid } from "uuid";
 import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { IoIosRemoveCircle } from "react-icons/io";
+import { AiFillEdit } from "react-icons/ai";
 import { addTodo, toggleCompleted, removeTodo } from "./todosSlice";
 
 const Todos = () => {
@@ -39,22 +40,30 @@ const Todos = () => {
             </h1>
             <ul className="mt-[30px]">
                 {Todos.map((todo) => (
-                    <li key={todo.id} className="py-1 border-b border-black">
-                        <div className="flex justify-between text-[20px] ">
-                            {todo.name}
+                    <li
+                        key={todo.id}
+                        className="py-1 border-b border-black flex items-center justify-between"
+                    >
+                        <div className="flex-1">
+                            <h3 className="text-[20px] font-bold">
+                                {todo.name}
+                            </h3>
+                            <p className="pl-2">
+                                <span className="mr-[15px]">Is completed:</span>
+                                <input
+                                    type="checkbox"
+                                    checked={todo.completed ? "checked" : ""}
+                                    onChange={() => handleCompleted(todo.id)}
+                                />
+                            </p>
+                        </div>
+                        <div className="flex">
                             <IoIosRemoveCircle
                                 onClick={() => handleRemoveTodo(todo.id)}
                                 className="text-[26px] cursor-pointer hover:opacity-75"
                             />
+                            <AiFillEdit className="text-[26px] cursor-pointer hover:opacity-75" />
                         </div>
-                        <p>
-                            <span className="mr-[15px]">Is completed:</span>
-                            <input
-                                type="checkbox"
-                                checked={todo.completed ? "checked" : ""}
-                                onChange={() => handleCompleted(todo.id)}
-                            />
-                        </p>
                     </li>
                 ))}
             </ul>
