@@ -1,14 +1,17 @@
 import { v4 as uuid } from "uuid";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { IoIosRemoveCircle } from "react-icons/io";
 import { AiFillEdit } from "react-icons/ai";
-import { addTodo, toggleCompleted, removeTodo } from "./todosSlice";
+import { addTodo, toggleCompleted, updateTodo, removeTodo } from "./todosSlice";
 
 const Todos = () => {
     const Todos = useSelector((state) => state.todos);
     const dispatch = useDispatch();
+    const inputRef = useRef();
     const [todoName, setTodoName] = useState("");
+    const [isUpdating, setIsUpdating] = useState(false);
+    const [isUpdatingId, setisUpdatingId] = useState("");
 
     const handleInputChange = (e) => {
         setTodoName(e.target.value);
@@ -33,6 +36,25 @@ const Todos = () => {
         dispatch(removeTodo(id));
     };
 
+    const handleEditButtonClick = (id) => {
+        const currentTodo = Todos.find((todo) => todo.id === id);
+        setTodoName(currentTodo.name);
+        setIsUpdating(true);
+        setisUpdatingId(id);
+        inputRef.current.focus();
+    };
+
+    const handleUpdateTodo = () => {
+        dispatch(
+            updateTodo({
+                id: isUpdatingId,
+                name: todoName,
+            })
+        );
+        setTodoName("");
+        setIsUpdating(false);
+    };
+
     return (
         <div>
             <h1 className="text-center text-[30px] font-bold">
@@ -48,6 +70,7 @@ const Todos = () => {
                             <h3 className="text-[20px] font-bold">
                                 {todo.name}
                             </h3>
+
                             <p className="pl-2">
                                 <span className="mr-[15px]">Is completed:</span>
                                 <input
@@ -60,9 +83,12 @@ const Todos = () => {
                         <div className="flex">
                             <IoIosRemoveCircle
                                 onClick={() => handleRemoveTodo(todo.id)}
-                                className="text-[26px] cursor-pointer hover:opacity-75"
+                                className="text-[26px] text-red-500 cursor-pointer hover:opacity-75"
                             />
-                            <AiFillEdit className="text-[26px] cursor-pointer hover:opacity-75" />
+                            <AiFillEdit
+                                onClick={() => handleEditButtonClick(todo.id)}
+                                className="text-[26px] text-blue-500 cursor-pointer hover:opacity-75"
+                            />
                         </div>
                     </li>
                 ))}
@@ -71,12 +97,19 @@ const Todos = () => {
                 <input
                     type="text"
                     value={todoName}
+                    ref={inputRef}
                     onChange={handleInputChange}
                     className="w-full py-[12px]"
                 />
-                <button onClick={handleAddTodo} className="btn-primary">
-                    Add Todo
-                </button>
+                {isUpdating ? (
+                    <button onClick={handleUpdateTodo} className="btn-primary">
+                        Update Todo
+                    </button>
+                ) : (
+                    <button onClick={handleAddTodo} className="btn-primary">
+                        Add Todo
+                    </button>
+                )}
             </div>
         </div>
     );

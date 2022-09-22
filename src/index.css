@@ -4,6 +4,6 @@
 
 @layer components {
     .btn-primary {
-        @apply bg-black text-white w-[150px] py-[10px] text-[20px] hover:opacity-75;
+        @apply bg-black text-white w-[200px] py-[10px] text-[20px] hover:opacity-75;
     }
 }

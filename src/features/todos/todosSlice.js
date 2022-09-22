@@ -31,12 +31,20 @@ export const todosSlice = createSlice({
             );
             if (currentTodo) currentTodo.completed = !currentTodo.completed;
         },
+        updateTodo: (state, action) => {
+            const { id, name } = action.payload;
+            const currentTodo = state.find((todo) => todo.id === id);
+            if (currentTodo) {
+                currentTodo.name = name;
+            }
+        },
         removeTodo: (state, action) => {
             return state.filter((todo) => todo.id !== action.payload);
         },
     },
 });
 
-export const { addTodo, toggleCompleted, removeTodo } = todosSlice.actions;
+export const { addTodo, toggleCompleted, updateTodo, removeTodo } =
+    todosSlice.actions;
 
 export default todosSlice.reducer;
