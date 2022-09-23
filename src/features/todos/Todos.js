@@ -1,31 +1,43 @@
 import { v4 as uuid } from "uuid";
 import { useState, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { createSelector } from "reselect";
 import { IoIosRemoveCircle } from "react-icons/io";
 import { AiFillEdit } from "react-icons/ai";
 import { addTodo, toggleCompleted, updateTodo, removeTodo } from "./todosSlice";
 
 const Todos = () => {
-    const Todos = useSelector((state) => state.todos);
     const dispatch = useDispatch();
     const inputRef = useRef();
     const [todoName, setTodoName] = useState("");
     const [isUpdating, setIsUpdating] = useState(false);
     const [isUpdatingId, setisUpdatingId] = useState("");
+    const [searchText, setSearchText] = useState("")
+
+    const selectFiltedTodos = createSelector(
+        (state) => state.todos,
+        (todos) => todos.filter((todo) => todo.name.includes(searchText))
+    );
+
+    const filtedTodos = useSelector(selectFiltedTodos);
 
     const handleInputChange = (e) => {
         setTodoName(e.target.value);
     };
 
     const handleAddTodo = () => {
-        dispatch(
-            addTodo({
-                id: uuid(),
-                name: todoName,
-                completed: false,
-            })
-        );
-        setTodoName("");
+        if (todoName) {
+            dispatch(
+                addTodo({
+                    id: uuid(),
+                    name: todoName,
+                    completed: false,
+                })
+            );
+            setTodoName("");
+        } else {
+            alert("Don't leave todo name empty!")
+        }
     };
 
     const handleCompleted = (id) => {
@@ -37,7 +49,7 @@ const Todos = () => {
     };
 
     const handleEditButtonClick = (id) => {
-        const currentTodo = Todos.find((todo) => todo.id === id);
+        const currentTodo = filtedTodos.find((todo) => todo.id === id);
         setTodoName(currentTodo.name);
         setIsUpdating(true);
         setisUpdatingId(id);
@@ -55,13 +67,26 @@ const Todos = () => {
         setIsUpdating(false);
     };
 
+    const handleSearchText = (e) => {
+        setSearchText(e.target.value);
+    };
+
     return (
         <div>
             <h1 className="text-center text-[30px] font-bold">
                 Todo App With Redux Toolkit
             </h1>
+            <div>
+                <input
+                    type="text"
+                    placeholder="Search..."
+                    value={searchText}
+                    onChange={handleSearchText}
+                    className="w-full mt-[30px] py-[12px]"
+                />
+            </div>
             <ul className="mt-[30px]">
-                {Todos.map((todo) => (
+                {filtedTodos.map((todo) => (
                     <li
                         key={todo.id}
                         className="py-1 border-b border-black flex items-center justify-between"
@@ -98,6 +123,7 @@ const Todos = () => {
                     type="text"
                     value={todoName}
                     ref={inputRef}
+                    placeholder="Enter a todo name..."
                     onChange={handleInputChange}
                     className="w-full py-[12px]"
                 />
