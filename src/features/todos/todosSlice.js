@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { nanoid } from "@reduxjs/toolkit";
 
 const initialState = [
     {
@@ -22,8 +23,19 @@ export const todosSlice = createSlice({
     name: "todos",
     initialState,
     reducers: {
-        addTodo: (state, action) => {
-            state.push(action.payload);
+        addTodo: {
+            reducer(state, action) {
+                state.push(action.payload);
+            },
+            prepare(todoName) {
+                return {
+                    payload: {
+                        id: nanoid(),
+                        name: todoName,
+                        completed: false,
+                    },
+                };
+            },
         },
         toggleCompleted: (state, action) => {
             const currentTodo = state.find(

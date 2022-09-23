@@ -1,4 +1,3 @@
-import { nanoid } from "@reduxjs/toolkit"
 import { useState, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { createSelector } from "reselect";
@@ -12,7 +11,7 @@ const Todos = () => {
     const [todoName, setTodoName] = useState("");
     const [isUpdating, setIsUpdating] = useState(false);
     const [isUpdatingId, setisUpdatingId] = useState("");
-    const [searchText, setSearchText] = useState("")
+    const [searchText, setSearchText] = useState("");
 
     const selectFiltedTodos = createSelector(
         (state) => state.todos,
@@ -27,16 +26,10 @@ const Todos = () => {
 
     const handleAddTodo = () => {
         if (todoName) {
-            dispatch(
-                addTodo({
-                    id: nanoid(),
-                    name: todoName,
-                    completed: false,
-                })
-            );
+            dispatch(addTodo(todoName));
             setTodoName("");
         } else {
-            alert("Don't leave todo name empty!")
+            alert("Don't leave todo name empty!");
         }
     };
 
