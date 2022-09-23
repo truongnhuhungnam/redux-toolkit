@@ -1,4 +1,4 @@
-import { v4 as uuid } from "uuid";
+import { nanoid } from "@reduxjs/toolkit"
 import { useState, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { createSelector } from "reselect";
@@ -29,7 +29,7 @@ const Todos = () => {
         if (todoName) {
             dispatch(
                 addTodo({
-                    id: uuid(),
+                    id: nanoid(),
                     name: todoName,
                     completed: false,
                 })
